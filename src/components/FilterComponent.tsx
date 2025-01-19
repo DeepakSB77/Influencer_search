@@ -137,22 +137,27 @@ export function FilterComponent({ onApplyFilters }: FilterProps) {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-8"
+      className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 p-8 rounded-xl shadow-xl mb-8 border border-gray-100 dark:border-gray-700"
     >
-      <h2 className="text-2xl font-bold mb-6">Filters</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div>
-          <Label htmlFor="sort">Sort By</Label>
+      <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+        Discover Influencers
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="space-y-2">
+          <Label htmlFor="sort" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+            Sort By
+          </Label>
           <Select onValueChange={(value) => handleSelectChange('sort', value)}>
-            <SelectTrigger>
+            <SelectTrigger className="w-full bg-white dark:bg-gray-800 border-2 hover:border-purple-500 transition-colors">
               <SelectValue placeholder="Select sort option" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="-score">Relevance</SelectItem>
-              <SelectItem value="-usersCount">Followers</SelectItem>
-              <SelectItem value="-avgViews">Views</SelectItem>
-              <SelectItem value="-avgER">Engagement Rate</SelectItem>
-              <SelectItem value="-qualityScore">Quality Score</SelectItem>
+              <SelectItem value="-score">🎯 Relevance</SelectItem>
+              <SelectItem value="-usersCount">👥 Followers</SelectItem>
+              <SelectItem value="-avgViews">👀 Views</SelectItem>
+              <SelectItem value="-avgER">💫 Engagement Rate</SelectItem>
+              <SelectItem value="-qualityScore">⭐ Quality Score</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -191,8 +196,10 @@ export function FilterComponent({ onApplyFilters }: FilterProps) {
             ))}
           </div>
         </div>
-        <div>
-          <Label>Social Types</Label>
+        <div className="space-y-2">
+          <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+            Social Networks
+          </Label>
           <div className="flex flex-wrap gap-2">
             {Object.entries(socialTypeLabels).map(([type, label]) => (
               <Button
@@ -201,8 +208,20 @@ export function FilterComponent({ onApplyFilters }: FilterProps) {
                 size="sm"
                 onClick={() => handleMultiSelectChange('socialTypes', type)}
                 title={label}
+                className={`
+                  ${filters.socialTypes.includes(type) 
+                    ? type === 'INST' ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
+                    : type === 'FB' ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800'
+                    : type === 'TW' ? 'bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700'
+                    : type === 'YT' ? 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800'
+                    : type === 'TT' ? 'bg-gradient-to-r from-black to-gray-800 hover:from-gray-900 hover:to-black'
+                    : 'bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600'
+                    : ''
+                  }
+                  transform hover:scale-105 transition-all duration-200
+                `}
               >
-                {type}
+                {label}
               </Button>
             ))}
           </div>
@@ -253,25 +272,29 @@ export function FilterComponent({ onApplyFilters }: FilterProps) {
             placeholder="Max ER"
           />
         </div>
-        <div>
-          <Label>Quality Score Range</Label>
-          <Slider
-            min={0}
-            max={100}
-            step={1}
-            value={[filters.minQualityScore, filters.maxQualityScore]}
-            onValueChange={(value) => {
-              setFilters({
-                ...filters,
-                minQualityScore: value[0],
-                maxQualityScore: value[1]
-              })
-            }}
-            className="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500"
-          />
-          <div className="flex justify-between mt-2">
-            <span>{filters.minQualityScore}%</span>
-            <span>{filters.maxQualityScore}%</span>
+        <div className="space-y-2">
+          <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+            Quality Score Range
+          </Label>
+          <div className="px-2">
+            <Slider
+              min={0}
+              max={100}
+              step={1}
+              value={[filters.minQualityScore, filters.maxQualityScore]}
+              onValueChange={(value) => {
+                setFilters({
+                  ...filters,
+                  minQualityScore: value[0],
+                  maxQualityScore: value[1]
+                })
+              }}
+              className="h-2 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full"
+            />
+            <div className="flex justify-between mt-2 text-sm text-gray-600 dark:text-gray-400">
+              <span>{filters.minQualityScore}%</span>
+              <span>{filters.maxQualityScore}%</span>
+            </div>
           </div>
         </div>
         <div className="flex items-center space-x-4">
@@ -401,7 +424,15 @@ export function FilterComponent({ onApplyFilters }: FilterProps) {
           <Label htmlFor="trackTotal">Track Total</Label>
         </div>
       </div>
-      <Button className="mt-6" onClick={handleApplyFilters}>Apply Filters</Button>
+
+      <div className="mt-8 flex justify-end">
+        <Button 
+          onClick={handleApplyFilters}
+          className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-2 rounded-full transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+        >
+          Apply Filters
+        </Button>
+      </div>
     </motion.div>
   )
 }
